@@ -7,18 +7,22 @@ struct ContentView: View {
   let columns = [GridItem(.adaptive(minimum: 80))]
 
   var body: some View {
-    ScrollView {
+    ScrollViewReader { proxy in
 
-      let _ = print("SCROLL VIEW")
-      let _ = Self._printChanges()
+      ScrollView {
 
-      LazyVGrid(columns: columns, spacing: 20) {
-
-        let _ = print("LAZY VGRID")
+        let _ = print("SCROLL VIEW")
+        let _ = print("\(proxy)")
         let _ = Self._printChanges()
 
-        ForEach(items, id: \.self) { item in
-          Text(item)
+        LazyVGrid(columns: columns, spacing: 20) {
+
+          let _ = print("LAZY VGRID")
+          let _ = Self._printChanges()
+
+          ForEach(items, id: \.self) { item in
+            Text(item)
+          }
         }
       }
     }
