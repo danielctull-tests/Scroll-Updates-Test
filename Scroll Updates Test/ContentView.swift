@@ -1,24 +1,31 @@
-//
-//  ContentView.swift
-//  Scroll Updates Test
-//
-//  Created by Daniel Tull on 18/02/2025.
-//
 
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+
+  let items = (1...10000).map { "Item \($0)" }
+  let columns = [GridItem(.adaptive(minimum: 80))]
+
+  var body: some View {
+    ScrollView {
+
+      let _ = print("SCROLL VIEW")
+      let _ = Self._printChanges()
+
+      LazyVGrid(columns: columns, spacing: 20) {
+
+        let _ = print("LAZY VGRID")
+        let _ = Self._printChanges()
+
+        ForEach(items, id: \.self) { item in
+          Text(item)
         }
-        .padding()
+      }
     }
+  }
 }
 
+
 #Preview {
-    ContentView()
+  ContentView()
 }
