@@ -20,16 +20,18 @@ struct ContentView: View {
           .frame(height: 1)
           .id(ContentView.scrollToTopID)
 
-        LazyVGrid(columns: columns, spacing: 20) {
-
-          let _ = print("LAZY VGRID")
-          let _ = Self._printChanges()
-
-          ForEach(items, id: \.self) { item in
-            Text(item)
-          }
-          .onAppear {
-            proxy.scrollTo(ContentView.scrollToTopID, anchor: .bottom)
+        VStack(spacing: .zero) {
+          LazyVGrid(columns: columns, spacing: 20) {
+            
+            let _ = print("LAZY VGRID")
+            let _ = Self._printChanges()
+            
+            ForEach(items, id: \.self) { item in
+              Text(item)
+            }
+            .onAppear {
+              proxy.scrollTo(ContentView.scrollToTopID, anchor: .bottom)
+            }
           }
         }
       }
