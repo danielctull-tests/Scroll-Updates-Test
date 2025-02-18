@@ -3,6 +3,7 @@ import SwiftUI
 
 struct ContentView: View {
 
+  private static let scrollToTopID = UUID()
   let items = (1...10000).map { "Item \($0)" }
   let columns = [GridItem(.adaptive(minimum: 80))]
 
@@ -15,6 +16,10 @@ struct ContentView: View {
         let _ = print("\(proxy)")
         let _ = Self._printChanges()
 
+        Spacer()
+          .frame(height: 1)
+          .id(ContentView.scrollToTopID)
+
         LazyVGrid(columns: columns, spacing: 20) {
 
           let _ = print("LAZY VGRID")
@@ -22,6 +27,9 @@ struct ContentView: View {
 
           ForEach(items, id: \.self) { item in
             Text(item)
+          }
+          .onAppear {
+            proxy.scrollTo(ContentView.scrollToTopID, anchor: .bottom)
           }
         }
       }
