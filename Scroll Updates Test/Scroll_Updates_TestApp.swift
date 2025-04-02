@@ -11,7 +11,11 @@ import SwiftUI
 struct Scroll_Updates_TestApp: App {
     var body: some Scene {
         WindowGroup {
+          NavigationStack {
             ContentView()
+              .navigationTitle("Scroll Updates Test")
+              .navigationBarTitleDisplayMode(.inline)
+          }
         }
     }
 }
