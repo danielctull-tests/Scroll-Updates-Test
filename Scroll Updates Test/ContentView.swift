@@ -1,37 +1,43 @@
-
 import SwiftUI
 
 struct ContentView: View {
 
-  private static let scrollToTopID = UUID()
-  let items = (1...10000).map { "Item \($0)" }
+  @State private var layout = ColumnLayout.two
+  @State private var visibleItems: [Int: Anchor<CGRect>] = [:]
+
+  let items = (1...10_000)
+  let max = 10_000
   let columns = [GridItem(.adaptive(minimum: 80))]
 
   var body: some View {
+    let _ = Self._printChanges()
     ScrollViewReader { proxy in
-
       ScrollView {
+        CardGrid(layout: layout, spacing: .ms) {
 
-        let _ = print("SCROLL VIEW")
-        let _ = print("\(proxy)")
-        let _ = Self._printChanges()
-
-        Spacer()
-          .frame(height: 1)
-          .id(ContentView.scrollToTopID)
-
-        VStack(spacing: .zero) {
-          LazyVGrid(columns: columns, spacing: 20) {
-            
-            let _ = print("LAZY VGRID")
-            let _ = Self._printChanges()
-            
-            ForEach(items, id: \.self) { item in
-              Text(item)
-            }
-            .onAppear {
-              proxy.scrollTo(ContentView.scrollToTopID, anchor: .bottom)
-            }
+          ForEach(items, id: \.self) { item in
+            Text("Item \(item)")
+              .padding()
+              .frame(maxWidth: .infinity)
+              .background(
+                Color(hue: Double(item) / Double(max), saturation: 1, brightness: 1),
+                in: RoundedRectangle(cornerRadius: 12),
+              )
+              .anchorPreference(key: VisibleItems.self, value: .bounds) {
+                [item: $0]
+              }
+          }
+        }
+      }
+      .onPreferenceChange(VisibleItems.self) { newValue in
+        visibleItems = newValue
+      }
+      .toolbar {
+        Button("Toggle") {
+          layout = layout.toggle()
+          print(visibleItems.keys.sorted())
+          if let first = visibleItems.keys.sorted().first {
+            proxy.scrollTo(first, anchor: .top)
           }
         }
       }
@@ -39,6 +45,17 @@ struct ContentView: View {
   }
 }
 
+// MARK: - VisibleItems
+
+/// PreferenceKey to track the visible items.
+private struct VisibleItems<ID: Hashable>: PreferenceKey {
+  static var defaultValue: [ID: Anchor<CGRect>] { [:] }
+  static func reduce(value: inout Value, nextValue: () -> Value) {
+    value.merge(nextValue(), uniquingKeysWith: { $1 })
+  }
+}
+
+// MARK: - Preview
 
 #Preview {
   ContentView()
