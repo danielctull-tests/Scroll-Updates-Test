@@ -16,13 +16,7 @@ struct ContentView: View {
         CardGrid(layout: layout, spacing: .ms) {
 
           ForEach(items, id: \.self) { item in
-            Text("Item \(item)")
-              .padding()
-              .frame(maxWidth: .infinity)
-              .background(
-                Color(hue: Double(item) / Double(max), saturation: 1, brightness: 1),
-                in: RoundedRectangle(cornerRadius: 12),
-              )
+            ItemView(item: item, max: max)
               .anchorPreference(key: VisibleItems.self, value: .bounds) {
                 [item: $0]
               }
@@ -52,6 +46,22 @@ private struct VisibleItems<ID: Hashable>: PreferenceKey {
   static var defaultValue: [ID: Anchor<CGRect>] { [:] }
   static func reduce(value: inout Value, nextValue: () -> Value) {
     value.merge(nextValue(), uniquingKeysWith: { $1 })
+  }
+}
+
+// MARK: - Item
+
+struct ItemView: View {
+  let item: Int
+  let max: Int
+  var body: some View {
+    Text("Item \(item)")
+      .padding()
+      .frame(maxWidth: .infinity)
+      .background(
+        Color(hue: Double(item) / Double(max), saturation: 1, brightness: 1),
+        in: RoundedRectangle(cornerRadius: 12),
+      )
   }
 }
 
